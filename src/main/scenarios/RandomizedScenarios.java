@@ -12,7 +12,7 @@ import static org.junit.Assert.fail;
 
 public class RandomizedScenarios {
     @Test
-    public void RandomizedFireNodesComparison() throws FireproofBuildingException {
+    public void RandomizedFireNodesTSP() throws FireproofBuildingException {
         final int CITY_BOUND = 10;
         final int NUM_BURNING_BUILDINGS = 8;
         final int NUM_TRIALS = 10;
@@ -40,31 +40,25 @@ public class RandomizedScenarios {
 
             // Dispatch firefighters and time it
             long greedyStartTime = System.nanoTime();
-            fireDispatch.dispatchFirefighters(fireNodes);
+            fireDispatch.GreedyDispatch(fireNodes);
             long greedyEndTime = System.nanoTime();
 
             // Sum total distance travelled for Greedy
-            List<Firefighter> firefighters = fireDispatch.getFirefighters();
-            int totalDistanceTraveledTSP = 0;
-            for (Firefighter firefighter : firefighters) {
-                totalDistanceTraveledTSP += firefighter.distanceTraveled();
-            }
+            List<Firefighter> firefightersGreedy = fireDispatch.getFirefighters();
+            int totalDistanceTraveledGreedy = firefightersGreedy.get(0).distanceTraveled();
 
             // Set buildings on fire and hire firefighters
             Pyromaniac.setFires(basicCity, fireNodes);
             fireDispatch.setFirefighters(1);
 
-            // Sum total distance travelled for TSP
-            firefighters = fireDispatch.getFirefighters();
-            int totalDistanceTraveledGreedy = 0;
-            for (Firefighter firefighter : firefighters) {
-                totalDistanceTraveledGreedy += firefighter.distanceTraveled();
-            }
-
             // Get brute force minimum path length and time it
             long tspStartTime = System.nanoTime();
             fireDispatch.TSPBruteForce(fireNodes);
             long tspEndTime = System.nanoTime();
+
+            // Sum total distance travelled for TSP
+            List<Firefighter>firefightersTSP = fireDispatch.getFirefighters();
+            int totalDistanceTraveledTSP = firefightersTSP.get(0).distanceTraveled();
 
             for (CityNode fireNode : fireNodes) {
                 Assert.assertFalse(basicCity.getBuilding(fireNode).isBurning());
