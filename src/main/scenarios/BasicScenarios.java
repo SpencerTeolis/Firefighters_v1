@@ -123,17 +123,28 @@ public class BasicScenarios {
   }
 
   @Test
-  public void TSP() {
+  public void TSP() throws FireproofBuildingException {
     CityNode fireStation = new CityNode(2, 2);
-    City basicCity = new CityImpl(5, 5, fireStation);
+    City basicCity = new CityImpl(6, 6, fireStation);
     CityNode[] fireNodes = {
             new CityNode(3, 1),
             new CityNode(2, 4),
             new CityNode(5, 2),
             new CityNode(0, 0)};
     FireDispatch fireDispatch = basicCity.getFireDispatch();
-    List<CityNode> path = fireDispatch.TSPBruteForce(fireNodes);
-    System.out.println(fireDispatch.calcPathCost(path));
+    Pyromaniac.setFires(basicCity, fireNodes);
+    fireDispatch.setFirefighters(1);
+    fireDispatch.TSPBruteForce(fireNodes);
+
+    List<Firefighter> firefighters = fireDispatch.getFirefighters();
+    int totalDistanceTraveled = 0;
+    for (Firefighter firefighter : firefighters) {
+      totalDistanceTraveled += firefighter.distanceTraveled();
+    }
+    for (CityNode fireNode : fireNodes){
+      Assert.assertFalse(basicCity.getBuilding(fireNode).isBurning());
+    }
+    System.out.println(totalDistanceTraveled);
   }
 
   @Test

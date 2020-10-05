@@ -139,8 +139,8 @@ public class FireDispatchImpl implements FireDispatch {
     List<Integer> columnSum = new ArrayList<>();
     for (Move move : moves) {
       int sum = 0;
-      for (int i = 0; i < distMatrix.length; i++) {
-        sum += distMatrix[i][move.buildingIdx];
+      for (int[] matrix : distMatrix) {
+        sum += matrix[move.buildingIdx];
       }
       columnSum.add(sum * -1);
     }
@@ -181,8 +181,9 @@ public class FireDispatchImpl implements FireDispatch {
   @Override
   public void setFirefighters(int numFirefighters) {
     Building fireStation = this.city.getFireStation();
+    this.firefighters.clear();
     for (int i = 0; i < numFirefighters; i++) {
-      firefighters.add(new FirefighterImpl(fireStation.getLocation()));
+      this.firefighters.add(new FirefighterImpl(fireStation.getLocation()));
     }
   }
 
@@ -237,18 +238,7 @@ public class FireDispatchImpl implements FireDispatch {
   }
 
   @Override
-  public int calcPathCost(List<CityNode> path) {
-    CityNode fireStation = this.city.getFireStation().getLocation();
-    int cost = CityNode.absDistance(fireStation, path.get(0));
-
-    for (int i = 0; i < path.size() - 1; i++) {
-      cost += CityNode.absDistance(path.get(i), path.get(i + 1));
-    }
-    return cost;
-  }
-
-  @Override
-  public List<CityNode> TSPBruteForce(CityNode[] buildings) {
+  public void TSPBruteForce(CityNode[] buildings) {
     // Convert list of buildings to indices to pass to permute function
     int[] idxs = new int[buildings.length];
     for (int i = 0; i < buildings.length; i++) {
@@ -267,11 +257,15 @@ public class FireDispatchImpl implements FireDispatch {
       }
     }
 
-    // Convert array of indices to list of buildings
-    List<CityNode> path = new ArrayList<>();
+    Firefighter firefighter = this.firefighters.get(0);
     for (Integer i : min_path){
-      path.add(buildings[i]);
+      try {
+        city.getBuilding(buildings[i]).extinguishFire();
+        firefighter.updateLocation(buildings[i]);
+      } catch (NoFireFoundException e) {
+      e.printStackTrace();
+      }
     }
-    return path;
+
   }
 }

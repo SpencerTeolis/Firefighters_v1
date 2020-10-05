@@ -43,23 +43,34 @@ public class RandomizedScenarios {
             fireDispatch.dispatchFirefighters(fireNodes);
             long greedyEndTime = System.nanoTime();
 
-            // Sum total distance travelled
+            // Sum total distance travelled for Greedy
             List<Firefighter> firefighters = fireDispatch.getFirefighters();
-            int totalDistanceTraveled = 0;
+            int totalDistanceTraveledTSP = 0;
             for (Firefighter firefighter : firefighters) {
-                totalDistanceTraveled += firefighter.distanceTraveled();
+                totalDistanceTraveledTSP += firefighter.distanceTraveled();
+            }
+
+            // Set buildings on fire and hire firefighters
+            Pyromaniac.setFires(basicCity, fireNodes);
+            fireDispatch.setFirefighters(1);
+
+            // Sum total distance travelled for TSP
+            firefighters = fireDispatch.getFirefighters();
+            int totalDistanceTraveledGreedy = 0;
+            for (Firefighter firefighter : firefighters) {
+                totalDistanceTraveledGreedy += firefighter.distanceTraveled();
             }
 
             // Get brute force minimum path length and time it
             long tspStartTime = System.nanoTime();
-            List<CityNode> path = fireDispatch.TSPBruteForce(fireNodes);
+            fireDispatch.TSPBruteForce(fireNodes);
             long tspEndTime = System.nanoTime();
 
             for (CityNode fireNode : fireNodes) {
                 Assert.assertFalse(basicCity.getBuilding(fireNode).isBurning());
             }
-            System.out.println("tsp   (pathLength: " + fireDispatch.calcPathCost(path) + " time: " + (tspEndTime-tspStartTime));
-            System.out.println("greedy(pathLength: " + totalDistanceTraveled + " time: " + (greedyEndTime-greedyStartTime));
+            System.out.println("tsp   (pathLength: " + totalDistanceTraveledTSP + " time: " + (tspEndTime-tspStartTime));
+            System.out.println("greedy(pathLength: " + totalDistanceTraveledGreedy + " time: " + (greedyEndTime-greedyStartTime));
         }
     }
 

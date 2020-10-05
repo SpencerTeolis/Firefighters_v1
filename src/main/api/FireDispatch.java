@@ -30,15 +30,6 @@ public interface FireDispatch {
    * Gets the bruteforce shortest path from the firestation to all buildings given
    *
    * @param buildings list of locations to be visited
-   * @return the shortest path as a list of CityNodes
    */
-  List<CityNode> TSPBruteForce(CityNode[] buildings);
-
-  /**
-   * Calculates the cost of a given path
-   *
-   * @param path list of CityNodes
-   * @return
-   */
-  int calcPathCost(List<CityNode> path);
+  void TSPBruteForce(CityNode[] buildings);
 }
