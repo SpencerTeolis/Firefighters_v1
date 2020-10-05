@@ -71,7 +71,7 @@ public class RandomizedScenarios {
     @Test
     public void RandomizedAllParametersWithReset() throws FireproofBuildingException {
         final int CITY_BOUND = 10;
-        final int NUM_BURNING_BUILDINGS = 8;
+        final int MAX_NUM_BURNING_BUILDINGS = 20;
         final int NUM_TRIALS = 10;
         final int MAX_FIREFIGHTERS = 8;
 
@@ -83,7 +83,8 @@ public class RandomizedScenarios {
 
             // Get random buildings to be set on fire that are not the firestation
             Set<CityNode> fireNodeSet = new HashSet<>();
-            while (fireNodeSet.size() < NUM_BURNING_BUILDINGS) {
+            int num_buildings = rand.nextInt(MAX_NUM_BURNING_BUILDINGS);
+            while (fireNodeSet.size() < num_buildings) {
                 CityNode fireNode = new CityNode(rand.nextInt(CITY_BOUND), rand.nextInt(CITY_BOUND));
                 if (!fireStation.equals(fireNode)) {
                     fireNodeSet.add(fireNode);
@@ -131,7 +132,7 @@ public class RandomizedScenarios {
     @Test
     public void RandomizedAllParametersWithoutReset() throws FireproofBuildingException {
         final int CITY_BOUND = 10;
-        final int NUM_BURNING_BUILDINGS = 8;
+        final int MAX_NUM_BURNING_BUILDINGS = 20;
         final int NUM_TRIALS = 10;
         final int MAX_FIREFIGHTERS = 8;
 
@@ -143,7 +144,8 @@ public class RandomizedScenarios {
 
             // Get random buildings to be set on fire that are not the firestation
             Set<CityNode> fireNodeSet = new HashSet<>();
-            while (fireNodeSet.size() < NUM_BURNING_BUILDINGS) {
+            int num_buildings = rand.nextInt(MAX_NUM_BURNING_BUILDINGS);
+            while (fireNodeSet.size() < num_buildings) {
                 CityNode fireNode = new CityNode(rand.nextInt(CITY_BOUND), rand.nextInt(CITY_BOUND));
                 if (!fireStation.equals(fireNode)) {
                     fireNodeSet.add(fireNode);
