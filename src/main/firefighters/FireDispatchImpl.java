@@ -192,6 +192,16 @@ public class FireDispatchImpl implements FireDispatch {
 
   @Override
   public void dispatchFirefighters(CityNode... burningBuildings) {
+    if (firefighters.size() > 1 || burningBuildings.length > 10) {
+      GreedyDispatch(burningBuildings);
+    }
+    else {
+      TSPBruteForce(burningBuildings);
+    }
+  }
+
+  @Override
+  public void GreedyDispatch(CityNode[] burningBuildings){
     this.distMatrix = new int[this.firefighters.size()][burningBuildings.length];
 
     // Initialize distMatrix with distances
@@ -238,10 +248,10 @@ public class FireDispatchImpl implements FireDispatch {
   }
 
   @Override
-  public void TSPBruteForce(CityNode[] buildings) {
+  public void TSPBruteForce(CityNode[] burningBuildings) {
     // Convert list of buildings to indices to pass to permute function
-    int[] idxs = new int[buildings.length];
-    for (int i = 0; i < buildings.length; i++) {
+    int[] idxs = new int[burningBuildings.length];
+    for (int i = 0; i < burningBuildings.length; i++) {
       idxs[i] = i;
     }
     List<List<Integer>> permutations = permute(idxs);
@@ -250,7 +260,7 @@ public class FireDispatchImpl implements FireDispatch {
     List<Integer> min_path = new ArrayList<>();
     int min_cost = Integer.MAX_VALUE;
     for (List<Integer> perm : permutations) {
-      int cost = calcPathCost(perm, buildings);
+      int cost = calcPathCost(perm, burningBuildings);
       if (cost < min_cost) {
         min_cost = cost;
         min_path = perm;
@@ -260,12 +270,11 @@ public class FireDispatchImpl implements FireDispatch {
     Firefighter firefighter = this.firefighters.get(0);
     for (Integer i : min_path){
       try {
-        city.getBuilding(buildings[i]).extinguishFire();
-        firefighter.updateLocation(buildings[i]);
+        city.getBuilding(burningBuildings[i]).extinguishFire();
+        firefighter.updateLocation(burningBuildings[i]);
       } catch (NoFireFoundException e) {
-      e.printStackTrace();
+        e.printStackTrace();
       }
     }
-
   }
 }

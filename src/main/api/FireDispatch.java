@@ -27,9 +27,16 @@ public interface FireDispatch {
   void dispatchFirefighters(CityNode... burningBuildings);
 
   /**
-   * Gets the bruteforce shortest path from the firestation to all buildings given
+   * Uses bruteforce to find the shortest path to dispatch one firefighter
    *
-   * @param buildings list of locations to be visited
+   * @param burningBuildings list of locations to be visited
    */
-  void TSPBruteForce(CityNode[] buildings);
+  void TSPBruteForce(CityNode[] burningBuildings);
+
+  /**
+   * Uses a greedy algorithm with some other constraints to dispatch firefighters
+   *
+   * @param burningBuildings list of locations to be visited
+   */
+  void GreedyDispatch(CityNode[] burningBuildings);
 }
