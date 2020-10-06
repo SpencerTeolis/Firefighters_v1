@@ -11,8 +11,13 @@ import java.util.*;
 import static org.junit.Assert.fail;
 
 public class RandomizedScenarios {
+    /**
+     * Compares path length and runtime of greedyDispatch vs bruteForce method.
+     * Randomizes locations of the buildings on fire
+     * @throws FireproofBuildingException
+     */
     @Test
-    public void RandomizedFireNodesTSP() throws FireproofBuildingException {
+    public void randomizedFireNodesAlgoComparison() throws FireproofBuildingException {
         final int CITY_BOUND = 10;
         final int NUM_BURNING_BUILDINGS = 8;
         final int NUM_TRIALS = 10;
@@ -40,7 +45,7 @@ public class RandomizedScenarios {
 
             // Dispatch firefighters and time it
             long greedyStartTime = System.nanoTime();
-            fireDispatch.GreedyDispatch(fireNodes);
+            fireDispatch.greedyDispatch(fireNodes);
             long greedyEndTime = System.nanoTime();
 
             // Sum total distance travelled for Greedy
@@ -52,24 +57,32 @@ public class RandomizedScenarios {
             fireDispatch.setFirefighters(1);
 
             // Get brute force minimum path length and time it
-            long tspStartTime = System.nanoTime();
-            fireDispatch.TSPBruteForce(fireNodes);
-            long tspEndTime = System.nanoTime();
+            long bruteForceStartTime = System.nanoTime();
+            fireDispatch.bruteForce(fireNodes);
+            long bruteForceEndTime = System.nanoTime();
 
-            // Sum total distance travelled for TSP
-            List<Firefighter>firefightersTSP = fireDispatch.getFirefighters();
-            int totalDistanceTraveledTSP = firefightersTSP.get(0).distanceTraveled();
+            // Sum total distance travelled for brute force
+            List<Firefighter> firefightersBruteForce = fireDispatch.getFirefighters();
+            int totDistTraveledBruteForce = firefightersBruteForce.get(0).distanceTraveled();
 
             for (CityNode fireNode : fireNodes) {
                 Assert.assertFalse(basicCity.getBuilding(fireNode).isBurning());
             }
-            System.out.println("tsp   (pathLength: " + totalDistanceTraveledTSP + " time: " + (tspEndTime-tspStartTime));
+            System.out.println("bruteForce(pathLength: " + totDistTraveledBruteForce + " time: " + (bruteForceEndTime-bruteForceStartTime));
             System.out.println("greedy(pathLength: " + totalDistanceTraveledGreedy + " time: " + (greedyEndTime-greedyStartTime));
         }
     }
 
+    /**
+     * Random sample of bounded test space. Everything is reset between trials.
+     * Randomizes number of burning buildings,
+     *            number of firefighters,
+     *            location of firehouse,
+     *            and location of burning buildings
+     * @throws FireproofBuildingException
+     */
     @Test
-    public void RandomizedAllParametersWithReset() throws FireproofBuildingException {
+    public void randomizedAllParametersWithReset() throws FireproofBuildingException {
         final int CITY_BOUND = 10;
         final int MAX_NUM_BURNING_BUILDINGS = 20;
         final int NUM_TRIALS = 10;
@@ -83,8 +96,8 @@ public class RandomizedScenarios {
 
             // Get random buildings to be set on fire that are not the firestation
             Set<CityNode> fireNodeSet = new HashSet<>();
-            int num_buildings = rand.nextInt(MAX_NUM_BURNING_BUILDINGS);
-            while (fireNodeSet.size() < num_buildings) {
+            int numBuildings = rand.nextInt(MAX_NUM_BURNING_BUILDINGS);
+            while (fireNodeSet.size() < numBuildings) {
                 CityNode fireNode = new CityNode(rand.nextInt(CITY_BOUND), rand.nextInt(CITY_BOUND));
                 if (!fireStation.equals(fireNode)) {
                     fireNodeSet.add(fireNode);
@@ -129,8 +142,16 @@ public class RandomizedScenarios {
         }
     }
 
+    /**
+     * Random sample of bounded test space. City and firefighters are persistent.
+     * Randomizes number of burning buildings,
+     *            number of firefighters,
+     *            location of firehouse,
+     *            and location of burning buildings
+     * @throws FireproofBuildingException
+     */
     @Test
-    public void RandomizedAllParametersWithoutReset() throws FireproofBuildingException {
+    public void randomizedAllParametersWithoutReset() throws FireproofBuildingException {
         final int CITY_BOUND = 10;
         final int MAX_NUM_BURNING_BUILDINGS = 20;
         final int NUM_TRIALS = 10;
@@ -144,8 +165,8 @@ public class RandomizedScenarios {
 
             // Get random buildings to be set on fire that are not the firestation
             Set<CityNode> fireNodeSet = new HashSet<>();
-            int num_buildings = rand.nextInt(MAX_NUM_BURNING_BUILDINGS);
-            while (fireNodeSet.size() < num_buildings) {
+            int numBuildings = rand.nextInt(MAX_NUM_BURNING_BUILDINGS);
+            while (fireNodeSet.size() < numBuildings) {
                 CityNode fireNode = new CityNode(rand.nextInt(CITY_BOUND), rand.nextInt(CITY_BOUND));
                 if (!fireStation.equals(fireNode)) {
                     fireNodeSet.add(fireNode);

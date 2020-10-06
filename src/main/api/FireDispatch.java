@@ -7,14 +7,14 @@ public interface FireDispatch {
   /**
    * Hires a number of firefighters
    *
-   * @param numFirefighters
+   * @param numFirefighters number of firefighters
    */
   void setFirefighters(int numFirefighters);
 
   /**
    * Get the list of firefighters
    *
-   * @return
+   * @return a list of Firefighters
    */
   List<Firefighter> getFirefighters();
 
@@ -31,12 +31,12 @@ public interface FireDispatch {
    *
    * @param burningBuildings list of locations to be visited
    */
-  void TSPBruteForce(CityNode[] burningBuildings);
+  void bruteForce(CityNode[] burningBuildings);
 
   /**
    * Uses a greedy algorithm with some other constraints to dispatch firefighters
    *
    * @param burningBuildings list of locations to be visited
    */
-  void GreedyDispatch(CityNode[] burningBuildings);
+  void greedyDispatch(CityNode[] burningBuildings);
 }

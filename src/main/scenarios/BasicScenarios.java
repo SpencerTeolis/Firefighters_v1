@@ -123,7 +123,7 @@ public class BasicScenarios {
   }
 
   @Test
-  public void TSP() throws FireproofBuildingException {
+  public void bruteForce() throws FireproofBuildingException {
     CityNode fireStation = new CityNode(2, 2);
     City basicCity = new CityImpl(6, 6, fireStation);
     CityNode[] fireNodes = {
@@ -134,7 +134,7 @@ public class BasicScenarios {
     FireDispatch fireDispatch = basicCity.getFireDispatch();
     Pyromaniac.setFires(basicCity, fireNodes);
     fireDispatch.setFirefighters(1);
-    fireDispatch.TSPBruteForce(fireNodes);
+    fireDispatch.bruteForce(fireNodes);
 
     List<Firefighter> firefighters = fireDispatch.getFirefighters();
     int totalDistanceTraveled = 0;

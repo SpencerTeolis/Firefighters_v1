@@ -38,15 +38,15 @@ public class FireDispatchImpl implements FireDispatch {
 
     // iterate through each number adding it to each position in each permutation generated in previous step
     for (int i = 1; i < nums.length; i++) {
-      List<List<Integer>> new_ans = new ArrayList<>();
-      for (int j = 0; j<=i; j++){
+      List<List<Integer>> newAns = new ArrayList<>();
+      for (int j = 0; j <= i; j++){
         for (List<Integer> perm : permutations) {
-          List<Integer> new_perm = new ArrayList(perm);
-          new_perm.add(j, nums[i]);
-          new_ans.add(new_perm);
+          List<Integer> newPerm = new ArrayList<>(perm);
+          newPerm.add(j, nums[i]);
+          newAns.add(newPerm);
         }
       }
-      permutations = new_ans;
+      permutations = newAns;
     }
     return permutations;
   }
@@ -190,18 +190,31 @@ public class FireDispatchImpl implements FireDispatch {
   @Override
   public List<Firefighter> getFirefighters() { return this.firefighters; }
 
+  /**
+   * If there is more than one firefighter or more than 10 burning buildings,
+   * use greedy approach to optimize for time, otherwise can use brute force
+   * which will guarantee optimal solution
+   * @param burningBuildings list of locations with burning buildings
+   */
   @Override
   public void dispatchFirefighters(CityNode... burningBuildings) {
     if (firefighters.size() > 1 || burningBuildings.length > 10) {
-      GreedyDispatch(burningBuildings);
-    }
-    else {
-      TSPBruteForce(burningBuildings);
+      greedyDispatch(burningBuildings);
+    } else {
+      bruteForce(burningBuildings);
     }
   }
 
+  /**
+   * Finds solution by choosing best option at each step
+   * n = # of firefighters
+   * m = # of burning buildings
+   *
+   * Runtime: O(n * m^2)
+   * @param burningBuildings list of locations to be visited
+   */
   @Override
-  public void GreedyDispatch(CityNode[] burningBuildings){
+  public void greedyDispatch(CityNode[] burningBuildings){
     this.distMatrix = new int[this.firefighters.size()][burningBuildings.length];
 
     // Initialize distMatrix with distances
@@ -247,8 +260,15 @@ public class FireDispatchImpl implements FireDispatch {
     }
   }
 
+  /**
+   * Finds solution by computing every permutation and choosing
+   * the one with the min path length
+   *
+   * Runtime: O(n!)
+   * @param burningBuildings list of locations to be visited
+   */
   @Override
-  public void TSPBruteForce(CityNode[] burningBuildings) {
+  public void bruteForce(CityNode[] burningBuildings) {
     // Convert list of buildings to indices to pass to permute function
     int[] idxs = new int[burningBuildings.length];
     for (int i = 0; i < burningBuildings.length; i++) {
@@ -257,18 +277,18 @@ public class FireDispatchImpl implements FireDispatch {
     List<List<Integer>> permutations = permute(idxs);
 
     // Calculate which permutation is the minimum cost
-    List<Integer> min_path = new ArrayList<>();
-    int min_cost = Integer.MAX_VALUE;
+    List<Integer> minPath = new ArrayList<>();
+    int minCost = Integer.MAX_VALUE;
     for (List<Integer> perm : permutations) {
       int cost = calcPathCost(perm, burningBuildings);
-      if (cost < min_cost) {
-        min_cost = cost;
-        min_path = perm;
+      if (cost < minCost) {
+        minCost = cost;
+        minPath = perm;
       }
     }
 
     Firefighter firefighter = this.firefighters.get(0);
-    for (Integer i : min_path){
+    for (Integer i : minPath){
       try {
         city.getBuilding(burningBuildings[i]).extinguishFire();
         firefighter.updateLocation(burningBuildings[i]);
